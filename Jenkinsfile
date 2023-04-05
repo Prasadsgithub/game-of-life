@@ -1,1 +1,1 @@
-This is for jenkins pipeline
+This is for CICD pipeline
