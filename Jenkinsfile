@@ -20,6 +20,13 @@ pipeline {
                 sh 'mvn package'
             }
         }
+    stage('source code') {
+        steps {
+            git url: 'https://github.com/Prasadsgithub/spring-petclinic.git' ,
+            branch: 'main'
+        }    
     }
+  }
 }
+    
 
