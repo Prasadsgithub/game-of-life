@@ -3,17 +3,23 @@ name: Check Git Status on EC2
 on:
   push:
     branches:
-      - master
+      - main  # or your default branch name
+
 jobs:
   check-status:
     runs-on: ubuntu-latest
     steps:
+    - name: Install sshpass
+      run: sudo apt-get install sshpass
+
     - name: Check Git Status on EC2
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          cd /home/devops/game-of-life
-          git status
+      env:
+        DEVOPS_PASSWORD: ${{ secrets.DEVOPS_PASSWORD }}
+      run: |
+        sshpass -p "$DEVOPS_PASSWORD" ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} '
+        sudo -S <<< "$DEVOPS_PASSWORD" su - devops << EOF
+        cd /home/devops/game-of-life
+        git status
+        EOF
+        '
+      shell: bash
